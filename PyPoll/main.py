@@ -11,44 +11,53 @@ Processing analyzes the votes and calculates each of the following:
 import csv
 import os
 
-if os.path.exists('./Resources/election_data.csv') :            # Confirm input file exists
+inputfile   = './Resources/election_data.csv'
+resultsfile = './Resources/election_results.txt'
 
-    with open('./Resources/election_data.csv') as infile :      # Open the input file
-        csvreader = csv.DictReader((infile))                    # Open dictionary reader for the input file
+if os.path.exists(inputfile) :                                   # Confirm input file exists
 
-        candidateDict = {}                                      # Capture Candidate votes in a dictionary
+    with open(inputfile) as infile :                             # Open the input file
+        csvreader = csv.DictReader(infile)                       # Open dictionary reader for the input file
 
-        for row in csvreader :                                  # For each line in the input file
-            if row['Candidate'] in candidateDict :              # Check for new Candidate name
-                candidateDict[row['Candidate']] += 1            # Candidate name not new, increment vote count
+        candidateDict = {}                                       # Capture Candidate votes in a dictionary
+
+        for row in csvreader :                                   # For each line in the input file
+            if row['Candidate'] in candidateDict :               # Check for new Candidate name
+                candidateDict[row['Candidate']] += 1             # Candidate name not new, increment vote count
             else :
-                candidateDict[row['Candidate']] = 1             # New Candidate name, initialize vote count
+                candidateDict[row['Candidate']] = 1              # New Candidate name, initialize vote count
 
-        if candidateDict == {} :                                # Check if input file was empty
-            print ('\nNo data found in file')                   # Empty input file, print status message
+        if candidateDict == {} :                                 # Check if input file was empty
+            print (f'\nNo data found in file "{inputfile}"')     # Empty input file, print status message
 
-        else :                                                  # Input file was not empty
-            totalvotes = sum(candidateDict.values())            # Calculate total number of votes cast
-            winnercnt = 0                                       # Intialize vote count for the winner
+        else :                                                   # Input file was not empty
+            totalvotes = sum(candidateDict.values())             # Calculate total number of votes cast
+            winnercnt = 0                                        # Intialize vote count for the winner
+            for (candidate, votecnt) in candidateDict.items() :  # For each Candidate in the election
+                if votecnt > winnercnt :                         # Check if Candidate has most votes
+                    winnercnt = votecnt                          # If yes, update the winning vote count
+                    winner = candidate                           # If yes, capture name of winning candidate
 
-            print ('\nElection Results')                        # Output results to the terminal
-            print ('-----------------------------')
-            print (f'Total vote count : {totalvotes}')
-            print ('-----------------------------')
+            # Function to output formatted election results
+            def summary_output (summaryfile = None) :
+                print ('\nElection Results'              , file=summaryfile)   # Output summary header
+                print ('-----------------------------'   , file=summaryfile)
+                print (f'Total vote count : {totalvotes}', file=summaryfile)
+                print ('-----------------------------'   , file=summaryfile)
 
-            for (candidate, votecnt) in candidateDict.items() : # For each Candidate in the election
+                for (candidate, votecnt) in candidateDict.items() :            # For each Candidate in the election
+                    print (f'{(candidate + " "*10)[:10]}  \t: '                # Output candidate name, vote % and count
+                           f'{(100*votecnt)//totalvotes}% \t: '      
+                           f'{votecnt} votes'         , file=summaryfile)
 
-                if votecnt > winnercnt :                        # Check if Candidate has most votes
-                    winnercnt = votecnt                         # Update the winning vote count
-                    winner = candidate                          # Capture name of winning candidate
+                print ('-----------------------------', file=summaryfile)      # Output winning candidate name
+                print (f'Winner : {winner} !!'        , file=summaryfile)
+                print ('-----------------------------', file=summaryfile)
 
-                print (f'{(candidate + " "*10)[:10]} \t: '      # Output candidate name, vote percentage and count
-                       f'{(100*votecnt)//totalvotes}% \t : '
-                       f'{votecnt} votes')
+            summary_output()                                     # Output summary to the terminal
 
-            print ('-----------------------------')             # Output winning candidate name
-            print (f'Winner : {winner} !!')
-            print ('-----------------------------')
+            with open(resultsfile, 'w') as outfile :
+                summary_output(outfile)                          # Output summary to results file
 
 else :
-    print ('\n File not found')
+    print (f'\n File "{inputfile}" not found')
