@@ -47,6 +47,7 @@ if os.path.exists(inputfile) :                         # Confirm input file exis
                 print ('\nFinancial Analysis'                                 , file=summaryout)
                 print ('-------------------------------'                      , file=summaryout)
                 print (f'Total Months : {monthcnt}'                           , file=summaryout)
+                print (f'Total : ${netpl}'                                    , file=summaryout)
                 print (f'Average Change : ${netpl // monthcnt}'               , file=summaryout)
                 print (f'Greatest Increase in Profits : {maxmonth} (${maxpl})', file=summaryout)
                 print (f'Greatest Decrease in Profits : {minmonth} (${minpl})', file=summaryout)
