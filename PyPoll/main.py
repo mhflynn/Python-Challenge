@@ -1,4 +1,4 @@
-'''Process set of poll data from file './Resources/election_data.csv.
+'''Process set of poll data from file "./election_data.csv".
 The dataset is composed of three columns: `Voter ID`, `County`, and `Candidate`.
 Processing analyzes the votes and calculates each of the following:
   * The total number of votes cast
@@ -11,8 +11,8 @@ Processing analyzes the votes and calculates each of the following:
 import csv
 import os
 
-inputfile   = './Resources/election_data.csv'
-resultsfile = './Resources/election_results.txt'
+inputfile   = 'election_data.csv'
+resultsfile = 'election_results.txt'
 
 if os.path.exists(inputfile) :                                   # Confirm input file exists
 
